@@ -11,7 +11,12 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.26.2",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@hello-pangea/dnd": "^16.3.0",
+    "@mui/icons-material": "^5.15.5",
+    "@mui/material": "^5.15.5",
+    "@palico-ai/react": "^1.2.0",
     "@prisma/client": "^5.5.2",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.4",

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 
 import { ListContainer } from "./_components/list-container";
+import CopilotChatWidget from "@/components/copilot_chat_widget";
+import { Box } from "@mui/material";
 
 interface BoardIdPageProps {
   params: {
@@ -45,6 +47,13 @@ const BoardIdPage = async ({
         boardId={params.boardId}
         data={lists}
       />
+      <Box sx={{
+        position: "fixed",
+        bottom: "2rem",
+        right: "2rem",
+      }}>
+         <CopilotChatWidget />
+      </Box>
     </div>
   );
 };
