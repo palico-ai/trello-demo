@@ -11,17 +11,27 @@ import { Button } from "@/components/ui/button";
 import { deleteCard } from "@/actions/delete-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCardModal } from "@/hooks/use-card-modal";
+import { useSummarize, useTranslate } from "@/hooks/llm/useTextCompletion";
+import { Card } from "@prisma/client";
+import { Menu, MenuItem } from "@mui/material";
+import { useState } from "react";
 
 interface ActionsProps {
   data: CardWithList;
+  updateCard: (card: Partial<Card>) => Promise<void>;
 };
 
 export const Actions = ({
   data,
+  updateCard
 }: ActionsProps) => {
   const params = useParams();
   const cardModal = useCardModal();
-
+  const {summarize, loading: loadingSummarize} = useSummarize()
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isTranslateMenuOpen = Boolean(anchorEl);
+  const { translate, loading: loadingTranslate } = useTranslate();
+  
   const { 
     execute: executeCopyCard,
     isLoading: isLoadingCopy,
@@ -55,6 +65,30 @@ export const Actions = ({
       id: data.id,
       boardId,
     });
+  };
+
+  const handleSummarize = async () => {
+    if(!data.description) {
+      return
+    }
+    const summary = await summarize(data.description)
+    if(summary.message.content) {
+      await updateCard({
+        description: summary.message.content.toString(),
+      });
+    }
+  }
+
+  const handleTranslate = async (option: string) => {
+    if(!data.description) {
+      return
+    }
+    const translated = await translate(data.description, option);
+    if (translated.message.content) {
+      await updateCard({
+        description: translated.message.content.toString(),
+      });
+    }
   };
 
   const onDelete = () => {

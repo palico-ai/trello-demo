@@ -1,22 +1,25 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { CardWithList } from "@/types";
 import { fetcher } from "@/lib/fetcher";
-import { AuditLog } from "@prisma/client";
+import { AuditLog, Card } from "@prisma/client";
 import { useCardModal } from "@/hooks/use-card-modal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import { Header } from "./header";
 import { Description } from "./description";
 import { Actions } from "./actions";
 import { Activity } from "./activity";
+import { toast } from "sonner";
+import { updateCard } from "@/services/card";
+import { Dialog, DialogContent } from "@mui/material";
 
 export const CardModal = () => {
   const id = useCardModal((state) => state.id);
   const isOpen = useCardModal((state) => state.isOpen);
   const onClose = useCardModal((state) => state.onClose);
+  const queryClient = useQueryClient();
 
   const { data: cardData } = useQuery<CardWithList>({
     queryKey: ["card", id],
@@ -28,12 +31,30 @@ export const CardModal = () => {
     queryFn: () => fetcher(`/api/cards/${id}/logs`),
   });
 
+  const handleUpdateCard = async (updated: Partial<Card>) => {
+    if(!id) {
+      throw new Error("No card id");
+    }
+    const card = await updateCard(id, updated)
+    queryClient.invalidateQueries({
+      queryKey: ["card", card.id],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["card-logs", card.id]
+    });
+    toast.success(`Card "${card.title}" updated`);
+  }
+
   return (
     <Dialog
+      fullWidth
+      maxWidth="md"
       open={isOpen}
-      onOpenChange={onClose}
+      onClose={onClose}
     >
-      <DialogContent>
+      <DialogContent sx={{
+        padding: 4
+      }}>
         {!cardData
           ? <Header.Skeleton />
           : <Header data={cardData} />
@@ -43,7 +64,7 @@ export const CardModal = () => {
             <div className="w-full space-y-6">
               {!cardData
                 ? <Description.Skeleton />
-                : <Description data={cardData} />
+                : <Description data={cardData} updateCard={handleUpdateCard} />
               }
               {!auditLogsData
                 ? <Activity.Skeleton />
@@ -53,7 +74,7 @@ export const CardModal = () => {
           </div>
           {!cardData
             ? <Actions.Skeleton />
-            : <Actions data={cardData} />
+            : <Actions data={cardData} updateCard={handleUpdateCard} />
           }
         </div>
       </DialogContent>

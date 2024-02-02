@@ -1,4 +1,3 @@
-import { PalicoContextProvider } from "@/components/copilot_chat_widget/palico_contex";
 import { Navbar } from "./_components/navbar";
 
 const DashboardLayout = ({ 
@@ -8,10 +7,8 @@ const DashboardLayout = ({
  }) => {
   return (
     <div className="h-full">
-      <PalicoContextProvider deploymentId={7}>
         <Navbar />
-        {children}
-      </PalicoContextProvider>
+          {children}
     </div>
   );
  };

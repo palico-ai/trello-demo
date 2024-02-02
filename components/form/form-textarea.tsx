@@ -15,8 +15,11 @@ interface FormTextareaProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  rows?: number;
   errors?: Record<string, string[] | undefined>;
   className?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onBlur?: () => void;
   onClick?: () => void;
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement> | undefined;
@@ -30,6 +33,9 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>((
   required,
   disabled,
   errors,
+  value,
+  onChange,
+  rows,
   onBlur,
   onClick,
   onKeyDown,
@@ -53,6 +59,9 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>((
           onKeyDown={onKeyDown}
           onBlur={onBlur}
           onClick={onClick}
+          rows={rows}
+          value={value}
+          onChange={onChange}
           ref={ref}
           required={required}
           placeholder={placeholder}

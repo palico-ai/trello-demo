@@ -61,6 +61,10 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       entityType: ENTITY_TYPE.CARD,
       action: ACTION.CREATE,
     });
+
+    return {
+      data: card,
+    };
   } catch (error) {
     return {
       error: "Failed to create."

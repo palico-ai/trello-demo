@@ -37,6 +37,7 @@ export const useAction = <TInput, TOutput> (
         if (result.error) {
           setError(result.error);
           options.onError?.(result.error);
+          throw new Error(result.error);
         }
 
         if (result.data) {

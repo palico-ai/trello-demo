@@ -16,6 +16,7 @@ import { createCard } from "@/actions/create-card";
 import { Button } from "@/components/ui/button";
 import { FormSubmit } from "@/components/form/form-submit";
 import { FormTextarea } from "@/components/form/form-textarea";
+import { useCreateCard } from "@/context/board";
 
 interface CardFormProps {
   listId: string;
@@ -43,6 +44,8 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
     },
   });
 
+  const {createCard: handleCreateCard} = useCreateCard()
+
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       disableEditing();
@@ -59,12 +62,17 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
     }
   };
 
-  const onSubmit = (formData: FormData) => {
+  const onSubmit = async (formData: FormData) => {
     const title = formData.get("title") as string;
     const listId = formData.get("listId") as string;
     const boardId = params.boardId as string;
 
-    execute({ title, listId, boardId });
+    console.log(`title: ${title}`)
+    console.log(`list id: ${listId}`)
+    console.log(`board id: ${boardId}`)
+
+    await handleCreateCard(title, listId);
+    formRef.current?.reset();
   };
 
   if (isEditing) {

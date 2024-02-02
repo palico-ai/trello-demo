@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import Button from "@mui/material/Button";
 import { Box, IconButton, Paper, Popover } from "@mui/material";
 import CopilotIcon from '@mui/icons-material/AcUnit';
 import ChatFragment from "./chat";
+import { getCodaPages } from "@/services/coda";
 
 const CopilotChatWidget: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const open = useMemo(() => Boolean(anchorEl) , [anchorEl]);
-
+  
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -20,7 +21,7 @@ const CopilotChatWidget: React.FC = () => {
 
   return (
     <Box>
-      <Button startIcon={<CopilotIcon />} sx={{
+      <Button ref={setAnchorEl} startIcon={<CopilotIcon />} sx={{
         color: "#fff",
       }} size="large" onClick={handleClick}>
         Copilot
